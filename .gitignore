@@ -1,0 +1,24 @@
+# ==== Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+__pypackages__/
+
+.vscode/
+.idea/
+
+# ==== Applications files
+data/
+*/media/
+*/static/
+*/staticfiles/
+
+logs/
+*.logs
+
+# ==== env files
+.envrc
+
+# === sqlite
+*.sqlite*

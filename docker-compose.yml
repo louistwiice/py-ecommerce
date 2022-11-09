@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: graphql-db
+    volumes:
+      - ./data/postgres_db:/var/lib/postgresql/data/
+    env_file:
+      - ./.envs/.env.postgres
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:alpine
+    container_name: graphql-redis
+
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: graphql-backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app/:/code/app
+      - ./scripts/:/code/scripts
+    env_file:
+      - ./.envs/.env.app
+      - ./.envs/.env.postgres
