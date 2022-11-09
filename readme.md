@@ -1,4 +1,4 @@
-# Project Name: GraphQL Backend API
+# E-commerce Backend site with GraphQL and Django
 
 ## Description
 The goal is to have a base project backend In GraphQL. The project run on docker
