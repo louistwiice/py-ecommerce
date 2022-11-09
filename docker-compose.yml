@@ -3,7 +3,7 @@ version: '3.7'
 services:
   postgres:
     image: postgres:alpine
-    container_name: graphql-db
+    container_name: graphecom-db
     volumes:
       - ./data/postgres_db:/var/lib/postgresql/data/
     env_file:
@@ -13,13 +13,13 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: graphql-redis
+    container_name: graphecom-redis
 
   app:
     build:
       context: .
       dockerfile: dockerfile
-    container_name: graphql-backend
+    container_name: graphecom-backend
     ports:
       - 8000:8000
     volumes:
