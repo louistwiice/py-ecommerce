@@ -32,12 +32,14 @@ ALLOWED_HOSTS = []
 THIRD_APPS = [
     'graphene_django',
     'graphql_auth',
-    'django_filters'
-    #'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'django_filters',
+    'mptt',
+    'phonenumber_field',
 ]
 
 CREATED_APPS = [
-    'cuser'
+    'cuser',
+    'items',
 ]
 
 BASE_APPS = [
@@ -228,7 +230,8 @@ GRAPHQL_JWT = {
 }
 
 GRAPHENE = {
-    'SCHEMA': 'cuser.schema.schema',
+    #'SCHEMA': 'cuser.schema.schema',
+    'SCHEMA': 'schemas.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
@@ -243,3 +246,5 @@ EMAIL_HOST = os.getenv('EMAIL_HOST', default='mailhog')
 EMAIL_USE_TLS = bool(os.getenv('EMAIL_USE_TLS', default=False))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='example@example.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default=None)
+
+PHONENUMBER_DEFAULT_REGION='SN'

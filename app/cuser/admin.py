@@ -8,8 +8,12 @@ from .models import User
 # Register your models here.
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ['username', 'first_name', 'last_name', 'is_active', 'has_picture']
-    search_fields = ['username', 'first_name', 'last_name']
+    list_display = ['username', 'first_name', 'last_name', 'is_active', 'has_picture', 'phone_number']
+    search_fields = ['username', 'first_name', 'last_name', 'phone_number']
+
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('phone_number',)}),
+    )
 
     def has_picture(self, obj) -> bool:
         if obj.picture:
