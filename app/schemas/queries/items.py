@@ -1,8 +1,9 @@
 import graphene
 import structlog
-from django.db.models import Q
-from items.models import Item, Category
 
+from django.db.models import Q
+
+from items.models import Item, Category
 from serializers.items import ItemType, CategoryType
 
 logger = structlog.get_logger('app-logger')
@@ -35,12 +36,17 @@ class CategoryQuery(graphene.ObjectType):
 
 class ItemQuery(graphene.ObjectType):
     all_items = graphene.List(ItemType)
-    item_by_id = graphene.Field(ItemType, id=graphene.ID(required=True))
+    item_by_id = graphene.Field(ItemType, id=graphene.ID(required=True, description="Item's ID"))
+    items_search = graphene.List(
+        ItemType,
+        title__icontains=graphene.String(required=False, description="Search items that contains a specific word in title"),
+        title__istartswith=graphene.String(required=False, description="Search items that start with a specific word in title")
+    )
 
-    user_items = graphene.List(ItemType, id=graphene.ID(), username=graphene.String())
-
+    user_items = graphene.List(ItemType, id=graphene.ID(description="User's ID"), username=graphene.String(description="User's Username"))
 
     def resolve_all_items(root, info):
+
         logger.info('ALL_ITEMS', user=info.context.user.username)
         return Item.objects.all()
 
@@ -52,10 +58,22 @@ class ItemQuery(graphene.ObjectType):
 
         return item
 
+    def resolve_items_search(root, info, title__icontains=None, title__istartswith=None):
+        query = Q()
+
+        if title__icontains:
+            query = query | Q(title__icontains=title__icontains)
+
+        if title__istartswith:
+            query = query | Q(title__istartswith=title__istartswith)
+
+        return Item.objects.filter(query)
+
     def resolve_user_items(root, info, id=None, username=None):
         """
         Return all items of a specific user
         """
+
         items = Item.objects.filter(
             Q(user__id=id) | Q(user__username=username)
         )

@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from utilities.common import TimestampBase
+from utilities.common_model import TimestampBase
 from utilities.choices import Colors
 
 

@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+from datetime import timedelta
+
 import structlog
 from pathlib import Path
 
@@ -40,6 +42,7 @@ THIRD_APPS = [
 CREATED_APPS = [
     'cuser',
     'items',
+    'tasks',
 ]
 
 BASE_APPS = [
@@ -62,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_structlog.middlewares.RequestMiddleware',
+    'django_structlog.middlewares.CeleryMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -110,12 +114,15 @@ else:
 # Redis
 REDIS_DEFAULT_CACHE_DB = os.getenv("REDIS_DEFAULT_CACHE_DB", default=5)
 
-REDIS_URL = os.getenv("REDIS_URL", default="redis://redis:6379/{}".format(REDIS_DEFAULT_CACHE_DB))
+REDIS_URL = os.getenv("REDIS_URL", default="redis://redis:6379/")
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "DB": int(REDIS_DEFAULT_CACHE_DB),
+        }
     }
 }
 
@@ -168,8 +175,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "cuser.User"
 
 AUTHENTICATION_BACKENDS = [
-    #'graphql_jwt.backends.JSONWebTokenBackend',
-    "graphql_auth.backends.GraphQLAuthBackend",
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    #"graphql_auth.backends.GraphQLAuthBackend",
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -224,13 +231,13 @@ structlog.configure(
 # ==== GraphQL setting
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
-
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=10),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
     # optional
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
 
 GRAPHENE = {
-    #'SCHEMA': 'cuser.schema.schema',
     'SCHEMA': 'schemas.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
@@ -248,3 +255,9 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='example@example.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default=None)
 
 PHONENUMBER_DEFAULT_REGION='SN'
+
+
+CELERY_REDIS_DB = os.getenv('CELERY_REDIS_DB', default='3')
+CELERY_BROKER_URL = REDIS_URL + CELERY_REDIS_DB
+CELERY_TIMEZONE = "Africa/Dakar"
+
