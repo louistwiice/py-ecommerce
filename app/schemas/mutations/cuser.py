@@ -53,7 +53,7 @@ class RegisterMutation(graphene.Mutation):
 
         message = Mail.activation(username, otp)
         subject = 'Account activation'
-        red.set(f'{username}_otp', otp, ex=5*65)
+        red.set(name=f'{username}_otp', value=otp, ex=5*65)
         task_mail_user.apply_async((subject, [email], message))
 
         return RegisterMutation(user=user)
