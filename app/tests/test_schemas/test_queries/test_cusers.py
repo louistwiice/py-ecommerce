@@ -1,10 +1,5 @@
-import json
-
 import pytest
 import graphene
-
-from model_bakery import baker
-from graphene_django.utils.testing import GraphQLTestCase
 
 from cuser.models import User
 from schemas.queries.cuser import CUserQuery
@@ -14,7 +9,7 @@ from schemas.queries.cuser import CUserQuery
 def generate_users(mocker):
     return [
         User(id=1, username='John', first_name='Lennon', is_active=True, email='john@mail.com'),
-        User(id=1, username='Mike', first_name='Spenser', is_active=True, email='mike@mail.com'),
+        User(id=2, username='Mike', first_name='Spenser', is_active=True, email='mike@mail.com'),
     ]
 
 
