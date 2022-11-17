@@ -43,6 +43,7 @@ CREATED_APPS = [
     'cuser',
     'items',
     'tasks',
+    'tests',
 ]
 
 BASE_APPS = [

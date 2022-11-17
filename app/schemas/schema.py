@@ -7,7 +7,6 @@ from .queries.items import ItemQuery, CategoryQuery
 from .queries.cuser import CUserQuery
 
 
-#class Query(UserQuery, CUserQuery, MeQuery, ItemQuery, CategoryQuery):
 class Query(CUserQuery, MeQuery, ItemQuery, CategoryQuery):
     pass
 

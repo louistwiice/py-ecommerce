@@ -15,7 +15,6 @@ class CUserQuery(graphene.ObjectType):
     me = graphene.Field(UserType)
 
     def resolve_all_users(root, info):
-        print(info.context.user.is_authenticated)
         return User.objects.all()
 
     def resolve_user(root, info, username=None, id=None):
@@ -37,4 +36,7 @@ class CUserQuery(graphene.ObjectType):
         return user
 
     def resolve_me(root, info):
-        return info.context.user
+        if info.context.user.is_authenticated:
+            return info.context.user
+
+        raise GraphQLError('User not authenticated. Please, log in first')

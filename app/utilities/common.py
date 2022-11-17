@@ -1,4 +1,6 @@
 import string
+from typing import List, Union
+
 import structlog
 import redis
 
@@ -9,6 +11,7 @@ from django.core.mail import send_mail
 from config import env
 
 logger = structlog.get_logger('app-logger')
+
 
 def generate_token(size: int = 5):
     return rstr.rstr(string.digits, size)
@@ -22,7 +25,7 @@ def get_redis_connection(db: int = None):
     return redis.Redis.from_url(settings.REDIS_URL + str(db))
 
 
-def mail(subject: str, emails:list, message: str):
+def mail(subject: str, emails: List[Union[str]], message: str) -> bool:
     try:
         send_mail(
             subject=subject,
@@ -33,3 +36,7 @@ def mail(subject: str, emails:list, message: str):
         )
     except Exception as e:
         logger.error('MAIL_EXCEPTION', error=str(e))
+        return False
+
+    return True
+
